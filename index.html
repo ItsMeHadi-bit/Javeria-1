@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tera Mera Pyar Amar</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the dark, starry background and animations */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Great+Vibes&display=swap');
+        
+        :root {
+            --primary-glow: #ff4d6d; /* Deep Rose Red for passion */
+            --secondary-glow: #a41334; /* Darker Red */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d0d;
+            /* Starry background SVG */
+            background-image: radial-gradient(circle at 50% 50%, rgba(13, 13, 13, 0) 0%, rgba(13, 13, 13, 0.9) 100%),
+                              url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 100 100'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='60%25'%3E%3Cstop offset='0%25' stop-color='%231f1a16' stop-opacity='1'/%3E%3Cstop offset='100%25' stop-color='%230d0d0d' stop-opacity='1'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23g)'/%3E%3C/svg%3E");
+            background-size: cover;
+            /* Allow vertical scrolling, prevent horizontal scrollbars */
+            min-height: 100vh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden; 
+        }
+        
+        /* Animation for a subtle, romantic pulse effect */
+        @keyframes subtle-pulse {
+            0% { box-shadow: 0 0 25px 8px rgba(255, 77, 109, 0.5), 0 0 50px 15px rgba(164, 19, 52, 0.7); }
+            100% { box-shadow: 0 0 35px 10px rgba(255, 77, 109, 0.7), 0 0 70px 20px rgba(164, 19, 52, 0.9); }
+        }
+        
+        /* Animation for a dramatic flash effect */
+        @keyframes dramatic-flash {
+            0% { box-shadow: 0 0 40px 15px rgba(255, 77, 109, 1), 0 0 100px 30px rgba(255, 0, 0, 0.8); }
+            50% { box-shadow: 0 0 25px 8px rgba(255, 77, 109, 0.5), 0 0 50px 15px rgba(164, 19, 52, 0.7); }
+            100% { box-shadow: 0 0 25px 8px rgba(255, 77, 109, 0.5), 0 0 50px 15px rgba(164, 19, 52, 0.7); }
+        }
+
+        /* Styling the central glowing ring based on the template image */
+        .glowing-ring {
+            border: 3px solid var(--primary-glow); 
+            transition: all 0.5s ease-in-out;
+            animation: subtle-pulse 5s infinite alternate; 
+            cursor: pointer; 
+        }
+
+        .glowing-ring.flash {
+            animation: dramatic-flash 0.5s ease-out;
+        }
+
+        .glowing-ring:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px 15px var(--primary-glow),
+                        0 0 80px 25px var(--secondary-glow);
+        }
+
+        .centered-text {
+            font-family: 'Great Vibes', cursive;
+            color: var(--primary-glow);
+            text-shadow: 0 0 10px rgba(255, 77, 109, 0.8); 
+            line-height: 1.5;
+            text-align: center;
+            font-size: clamp(0.75rem, 3vw, 1.5rem); 
+            white-space: pre-line; 
+        }
+        
+        /* Media query for mobile adjustments */
+        @media (max-width: 480px) {
+             .centered-text {
+                font-size: 0.9rem; 
+             }
+             .action-button {
+                 padding: 0.75rem 1.25rem; 
+                 font-size: 1rem;
+             }
+             /* Ensure main container takes less vertical space on small screens */
+             #main-container {
+                padding: 1rem;
+             }
+        }
+
+        /* Particle Animation */
+        @keyframes radiate-and-fade {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--end-x), var(--end-y)) scale(0.5); opacity: 0; }
+        }
+        
+        .particle {
+            position: fixed; 
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 100; 
+            background-color: var(--particle-color);
+            box-shadow: 0 0 5px var(--particle-color), 0 0 10px var(--particle-color);
+            animation: radiate-and-fade var(--duration) ease-out forwards;
+        }
+
+        /* Interaction button styles */
+        .action-button, .nav-button {
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+        }
+        .action-button:hover, .nav-button:hover {
+            background-color: var(--primary-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 77, 109, 0.8);
+        }
+
+        /* Navigation Buttons (Deep Red/Rose Theme) */
+        .nav-button {
+            background-color: var(--secondary-glow); 
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.6);
+        }
+        .nav-button:hover {
+            background-color: var(--primary-glow); 
+            color: #1a1a1a;
+            box-shadow: 0 6px 15px rgba(255, 77, 109, 1);
+        }
+        
+        /* Music button updated to match the romantic palette */
+        #music-button {
+             background-color: #ff6b81; 
+        }
+        #music-button.playing {
+             background-color: #22c55e; /* Green when playing */
+             box-shadow: 0 4px 15px rgba(34, 197, 94, 0.6);
+        }
+        #music-button:hover {
+             background-color: var(--primary-glow);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-container" class="w-full max-w-sm md:max-w-md lg:max-w-xl p-6 bg-[#1a1a1a] rounded-xl shadow-2xl border border-gray-700 backdrop-blur-sm z-10">
+        
+        <!-- CENTRAL CARD (Template Recreation) -->
+        <div class="relative flex flex-col items-center justify-center p-4 bg-[#141414] rounded-xl overflow-hidden shadow-inner shadow-[#0d0d0d]">
+
+            <!-- Glowing Ring Container (Pulses, is Touch Target, Triggers Flash) -->
+            <div id="image-touch-target" class="glowing-ring w-64 h-64 md:w-80 md:h-80 rounded-full flex items-center justify-center p-2 relative">
+                <!-- Central Image -->
+                <div class="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-[#141414] z-20">
+                    <img id="central-image" 
+                         src="https://raw.githubusercontent.com/ItsMeHadi-bit/Javeria-1/main/images/3.jpg" 
+                         alt="Central focus image" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/400x400/1f1a16/ff4d6d?text=Image+Unavailable';"
+                         class="w-full h-full object-cover transition-opacity duration-300">
+                </div>
+            </div>
+            
+            <!-- LOVE MESSAGE BELOW THE IMAGE -->
+            <p id="love-message" class="centered-text mt-6 mb-2 max-w-xs md:max-w-md">
+                My beautiful Javeria, every moment with you is a secret delight.<br>
+                You ignite my soul with a deep, passionate love.<br>
+                Come closer, my love, let's make this night eternal.
+            </p>
+        </div>
+
+        <!-- CAROUSEL NAVIGATION CONTROLS -->
+        <div class="flex justify-center mt-6 space-x-4">
+            <button id="prev-button" onclick="changeImage(-1)" 
+                    class="nav-button font-bold py-2 px-4 rounded-full text-sm transition duration-150 ease-in-out">
+                ← Previous
+            </button>
+            <button id="next-button" onclick="changeImage(1)" 
+                    class="nav-button font-bold py-2 px-4 rounded-full text-sm transition duration-150 ease-in-out">
+                Next →
+            </button>
+        </div>
+
+        <!-- INTERACTIVE BUTTONS SECTION (Thematic Particle Bursts) -->
+        <div class="mt-10 p-4 border-t border-gray-700 pt-6">
+            <h2 class="text-xl text-gray-200 mb-4 text-center">Express Your Feelings</h2>
+            <div class="flex justify-center space-x-2 sm:space-x-4 flex-wrap gap-y-3 sm:gap-y-4">
+                
+                <!-- Passion/Fire Button -->
+                <button onclick="triggerButtonBurst('#ff0000', this)" 
+                        class="action-button bg-[#ff6b81] text-[#1a1a1a] font-bold py-3 px-4 sm:px-6 rounded-full text-sm sm:text-lg shadow-xl hover:bg-white active:scale-95">
+                    My deep Love 💝
+                </button>
+                
+                <!-- Kisses/Lips Button -->
+                <button onclick="triggerButtonBurst('#ff4d6d', this)" 
+                        class="action-button bg-[#a41334] text-white font-bold py-3 px-4 sm:px-6 rounded-full text-sm sm:text-lg shadow-xl hover:bg-[#ff8f8f] active:scale-95">
+                    Deep Kisses 💋
+                </button>
+
+                <!-- Hearts/Love Button -->
+                <button onclick="triggerButtonBurst('#ffff00', this)" 
+                        class="action-button bg-[#ff4d6d] text-white font-bold py-3 px-4 sm:px-6 rounded-full text-sm sm:text-lg shadow-xl hover:bg-[#ff9955] active:scale-95">
+                    Eternal Love ❤️
+                </button>
+            </div>
+        </div>
+        
+        <!-- MUSIC CONTROL BUTTON -->
+        <div class="mt-8 flex justify-center">
+            <button id="music-button" 
+                    onclick="toggleMusic()" 
+                    class="action-button bg-pink-500 text-white font-bold py-3 px-8 rounded-full text-lg shadow-xl hover:bg-pink-400 active:scale-95 flex items-center space-x-2">
+                <span id="music-icon">&#9658;</span> <!-- Play Icon -->
+                <span id="music-text">Play Music</span>
+            </button>
+        </div>
+
+        <!-- Hidden Audio Element -->
+        <audio id="my-music" loop>
+            <source src="https://raw.githubusercontent.com/ItsMeHadi-bit/Javeria-1/main/Tera%20Mera%20Pyar%20Amar%20Mp3%20Song%20-%20Asli%20Naqli%201962%20Mp3%20Songs%20Free%20Download-%5BAudioTrimmer.com%5D.mp3" type="audio/mp3">
+            Your browser does not support the audio element.
+        </audio>
+
+    </div>
+
+    <script>
+        // --- UTILITY FUNCTION ---
+        function getRandomArbitrary(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // --- IMAGE CAROUSEL LOGIC ---
+        const IMAGE_BASE_URL = "https://raw.githubusercontent.com/ItsMeHadi-bit/Javeria-1/main/images/";
+        const IMAGE_FILENAMES = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"];
+        const IMAGE_URLS = IMAGE_FILENAMES.map(name => IMAGE_BASE_URL + name);
+        
+        const centralImage = document.getElementById('central-image');
+        let currentImageIndex = IMAGE_URLS.findIndex(url => url.endsWith("3.jpg")); 
+        if (currentImageIndex === -1) {
+             currentImageIndex = 0; 
+        }
+
+        function updateImage(index) {
+            centralImage.style.opacity = '0'; 
+
+            setTimeout(() => {
+                centralImage.src = IMAGE_URLS[index];
+                centralImage.style.opacity = '1'; 
+            }, 300);
+        }
+
+        function changeImage(direction) {
+            let newIndex = currentImageIndex + direction;
+
+            if (newIndex >= IMAGE_URLS.length) {
+                newIndex = 0;
+            } else if (newIndex < 0) {
+                newIndex = IMAGE_URLS.length - 1;
+            }
+
+            currentImageIndex = newIndex;
+            updateImage(currentImageIndex);
+        }
+
+        // --- MUSIC PLAYER LOGIC ---
+        const audio = document.getElementById('my-music');
+        const musicButton = document.getElementById('music-button');
+        const musicIcon = document.getElementById('music-icon');
+        const musicText = document.getElementById('music-text');
+        
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play()
+                    .then(() => {
+                        musicIcon.innerHTML = '&#9209;'; // Pause Icon
+                        musicText.textContent = 'Pause Music (Tera Mera Pyar Amar)';
+                        musicButton.classList.remove('bg-pink-500', 'hover:bg-pink-400', 'bg-red-500');
+                        musicButton.classList.add('playing');
+                    })
+                    .catch(error => {
+                        console.error("Autoplay failed:", error);
+                    });
+            } else {
+                audio.pause();
+                musicIcon.innerHTML = '&#9658;'; // Play Icon
+                musicText.textContent = 'Play Music';
+                musicButton.classList.remove('playing');
+                musicButton.classList.add('bg-pink-500', 'hover:bg-pink-400');
+            }
+        }
+
+        // --- PARTICLE EFFECT LOGIC ---
+        
+        const touchTarget = document.getElementById('image-touch-target');
+
+        // Function to create and animate a single particle
+        function createParticle(startX, startY, color, isCenterBurst) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            particle.style.setProperty('--particle-color', color);
+
+            particle.style.left = `${startX}px`;
+            particle.style.top = `${startY}px`;
+
+            const angle = getRandomArbitrary(0, 2 * Math.PI);
+            const radius = getRandomArbitrary(50, isCenterBurst ? 350 : 150); 
+            
+            const endX = Math.cos(angle) * radius;
+            const endY = Math.sin(angle) * radius;
+
+            particle.style.setProperty('--end-x', `${endX}px`);
+            particle.style.setProperty('--end-y', `${endY}px`);
+
+            const duration = getRandomArbitrary(1, 2.5);
+            particle.style.setProperty('--duration', `${duration}s`);
+            
+            const delay = getRandomArbitrary(0, 0.5); 
+            particle.style.animationDelay = `${delay}s`;
+
+            document.body.appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, (duration + delay) * 1000);
+        }
+
+        // --- CENTER IMAGE INTERACTION (TOUCH) ---
+        
+        function triggerCenterBurst() {
+            // Get center of the touch target element in the viewport
+            const rect = touchTarget.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Trigger dramatic glow flash
+            touchTarget.classList.add('flash');
+            setTimeout(() => {
+                 // Remove 'flash' class to revert to subtle pulse animation
+                touchTarget.classList.remove('flash'); 
+            }, 500); 
+
+            // Particle burst (Deep red/white/pink)
+            const burstCount = 50; 
+            const colors = ['#ff0000', '#ffffff', '#ff4d6d', '#ff6b81'];
+            
+            for (let i = 0; i < burstCount; i++) {
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                createParticle(centerX, centerY, color, true); // true for center burst
+            }
+        }
+        
+        // --- BUTTON INTERACTION ---
+        
+        function triggerButtonBurst(color, buttonElement) {
+            const rect = buttonElement.getBoundingClientRect();
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+            
+            const burstCount = 20; 
+
+            for (let i = 0; i < burstCount; i++) {
+                createParticle(startX, startY, color, false); // false for button burst
+            }
+        }
+
+
+        // --- INITIAL SETUP ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial image check
+            updateImage(currentImageIndex);
+            
+            // Add touch event listener to the central glowing ring
+            const handleInteraction = (event) => {
+                // Check if it's a touch event and prevent default action
+                if (event.type === 'touchstart' || event.type === 'click') {
+                    event.preventDefault(); 
+                    triggerCenterBurst();
+                }
+            };
+
+            touchTarget.addEventListener('touchstart', handleInteraction);
+            touchTarget.addEventListener('click', handleInteraction); 
+        });
+    </script>
+
+</body>
+</html>
