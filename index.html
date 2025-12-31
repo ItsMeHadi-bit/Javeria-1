@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Special Message for You</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400&family=Nunito:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Preload Assets -->
+    <link rel="preload" as="image" href="https://img.freepik.com/free-vector/realistic-happy-valentines-day-background_52683-53195.jpg?w=1000">
+    <link rel="preload" as="image" href="https://github.com/ItsMeHadi-bit/Javeria-1/blob/main/images/2.jpg?raw=true">
+    <link rel="preload" as="image" href="https://github.com/ItsMeHadi-bit/Javeria-1/blob/main/images/4.jpg?raw=true">
+    <link rel="preload" as="image" href="https://github.com/ItsMeHadi-bit/Javeria-1/blob/main/images/6.jpg?raw=true">
+    <link rel="preload" as="image" href="https://github.com/ItsMeHadi-bit/Javeria-1/blob/main/images/9.jpg?raw=true">
+
+    <style>
+        /* Custom Styles & Animations */
+        body { font-family: 'Nunito', sans-serif; overflow: hidden; background-color: #2a0b12; }
+        .font-cursive { font-family: 'Dancing Script', cursive; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        
+        /* Fixed Flip Logic */
+        .my-rotate-y-180 { transform: rotateY(180deg); }
+        
+        /* This class forces the flip state with a slow transition */
+        .card-flipped {
+            transform: rotateY(180deg) translateX(-10px) !important;
+        }
+        
+        /* Animation Classes - Slower & Smoother */
+        .animate-float { animation: float linear infinite; }
+        .animate-pulse-slow { animation: pulse-slow 6s infinite ease-in-out; }
+        .animate-twinkle { animation: twinkle 5s infinite ease-in-out; }
+        .animate-fade-in { animation: fadeIn 2s ease-out forwards; }
+        .animate-bounce-slow { animation: bounce 3s infinite ease-in-out; }
+
+        /* Gentle Sway for hearts */
+        @keyframes sway {
+            0% { transform: translateX(0) rotate(0deg); }
+            50% { transform: translateX(20px) rotate(10deg); }
+            100% { transform: translateX(0) rotate(0deg); }
+        }
+
+        /* Upward Float with Sway */
+        @keyframes float {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #fbcfe8; border-radius: 4px; }
+
+        /* Utilities */
+        .hidden-stage { display: none !important; opacity: 0; }
+        .transition-slow { transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Card Swipe Logic */
+        .card-stack { position: relative; width: 18rem; height: 28rem; }
+        .card {
+            position: absolute; inset: 0; border-radius: 1rem; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 2rem; text-align: center; border: 4px solid rgba(255,255,255,0.3);
+            transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            will-change: transform, opacity;
+        }
+    </style>
+</head>
+<body class="text-white selection:bg-pink-500">
+
+    <!-- Audio -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="https://github.com/ItsMeHadi-bit/Javeria-1/raw/main/New%20Message!.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Background Effects -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute top-[-20%] left-[-20%] w-[80%] h-[80%] bg-red-900/30 rounded-full blur-[120px] animate-pulse-slow"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-pink-900/30 rounded-full blur-[120px] animate-pulse-slow delay-1000"></div>
+        <div class="absolute top-1/4 left-1/4 w-1 h-1 bg-white rounded-full animate-twinkle opacity-70"></div>
+        <div class="absolute top-3/4 left-1/3 w-1.5 h-1.5 bg-pink-200 rounded-full animate-twinkle opacity-60 delay-700"></div>
+        <div id="floating-hearts" class="absolute inset-0"></div>
+    </div>
+
+    <!-- LEFT CAT -->
+    <div class="fixed bottom-2 left-2 md:bottom-8 md:left-8 z-[60] flex flex-col items-center pointer-events-none transition-all duration-1000 hover:scale-110">
+        <div class="bg-white/90 px-3 py-2 rounded-xl shadow-lg mb-2 animate-bounce-slow border-2 border-pink-200 rounded-bl-none">
+            <p class="text-[10px] md:text-xs font-bold text-pink-600 whitespace-nowrap font-sans">Happy New Year!</p>
+        </div>
+        <svg width="70" height="70" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-lg">
+            <g class="animate-pulse-slow origin-bottom">
+                <path d="M150 160 Q 190 140 180 100 Q 170 60 150 80" stroke="#fff" stroke-width="12" fill="none" stroke-linecap="round">
+                    <animate attributeName="d" values="M150 160 Q 190 140 180 100 Q 170 60 150 80;M150 160 Q 180 150 170 110 Q 160 70 140 90;M150 160 Q 190 140 180 100 Q 170 60 150 80" dur="4s" repeatCount="indefinite" />
+                </path>
+                <ellipse cx="100" cy="150" rx="60" ry="45" fill="#fff" />
+                <circle cx="100" cy="90" r="50" fill="#fff" />
+                <path d="M60 60 L 50 20 L 90 50 Z" fill="#fff" />
+                <path d="M140 60 L 150 20 L 110 50 Z" fill="#fff" />
+                <path d="M65 55 L 58 30 L 85 48 Z" fill="#fbcfe8" />
+                <path d="M135 55 L 142 30 L 115 48 Z" fill="#fbcfe8" />
+                <circle cx="85" cy="85" r="6" fill="#1f2937" />
+                <circle cx="115" cy="85" r="6" fill="#1f2937" />
+                <circle cx="87" cy="83" r="2" fill="#fff" />
+                <circle cx="117" cy="83" r="2" fill="#fff" />
+                <path d="M92 98 Q 100 105 108 98" stroke="#1f2937" stroke-width="3" fill="none" stroke-linecap="round" />
+                <ellipse cx="75" cy="95" rx="6" ry="3" fill="#f472b6" opacity="0.4" />
+                <ellipse cx="125" cy="95" rx="6" ry="3" fill="#f472b6" opacity="0.4" />
+                <ellipse cx="70" cy="175" rx="14" ry="10" fill="#fff" stroke="#fce7f3" stroke-width="2" />
+                <ellipse cx="130" cy="175" rx="14" ry="10" fill="#fff" stroke="#fce7f3" stroke-width="2" />
+            </g>
+        </svg>
+    </div>
+
+    <!-- RIGHT CAT -->
+    <div class="fixed bottom-2 right-2 md:bottom-8 md:right-8 z-[60] flex flex-col items-center pointer-events-none transition-all duration-1000 hover:scale-110">
+        <div class="bg-white/90 px-3 py-2 rounded-xl shadow-lg mb-2 animate-bounce-slow border-2 border-pink-200 rounded-br-none">
+            <p class="text-[10px] md:text-xs font-bold text-pink-600 whitespace-nowrap font-sans">Happy New Year!</p>
+        </div>
+        <svg width="70" height="70" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-lg" style="transform: scaleX(-1);">
+            <g class="animate-pulse-slow origin-bottom">
+                <path d="M150 160 Q 190 140 180 100 Q 170 60 150 80" stroke="#fff" stroke-width="12" fill="none" stroke-linecap="round">
+                    <animate attributeName="d" values="M150 160 Q 190 140 180 100 Q 170 60 150 80;M150 160 Q 180 150 170 110 Q 160 70 140 90;M150 160 Q 190 140 180 100 Q 170 60 150 80" dur="4s" repeatCount="indefinite" />
+                </path>
+                <ellipse cx="100" cy="150" rx="60" ry="45" fill="#fff" />
+                <circle cx="100" cy="90" r="50" fill="#fff" />
+                <path d="M60 60 L 50 20 L 90 50 Z" fill="#fff" />
+                <path d="M140 60 L 150 20 L 110 50 Z" fill="#fff" />
+                <path d="M65 55 L 58 30 L 85 48 Z" fill="#fbcfe8" />
+                <path d="M135 55 L 142 30 L 115 48 Z" fill="#fbcfe8" />
+                <circle cx="85" cy="85" r="6" fill="#1f2937" />
+                <circle cx="115" cy="85" r="6" fill="#1f2937" />
+                <circle cx="87" cy="83" r="2" fill="#fff" />
+                <circle cx="117" cy="83" r="2" fill="#fff" />
+                <path d="M92 98 Q 100 105 108 98" stroke="#1f2937" stroke-width="3" fill="none" stroke-linecap="round" />
+                <ellipse cx="75" cy="95" rx="6" ry="3" fill="#f472b6" opacity="0.4" />
+                <ellipse cx="125" cy="95" rx="6" ry="3" fill="#f472b6" opacity="0.4" />
+                <ellipse cx="70" cy="175" rx="14" ry="10" fill="#fff" stroke="#fce7f3" stroke-width="2" />
+                <ellipse cx="130" cy="175" rx="14" ry="10" fill="#fff" stroke="#fce7f3" stroke-width="2" />
+            </g>
+        </svg>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app" class="w-full h-screen flex flex-col items-center justify-center relative z-20 overflow-hidden">
+        
+        <!-- STAGE 0: INTRO SCREEN -->
+        <div id="intro-screen" class="flex flex-col items-center justify-center text-center cursor-pointer z-50 animate-fade-in absolute inset-0 bg-[#2a0b12]" onclick="startExperience()">
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                 <div class="w-64 h-64 bg-pink-500/20 rounded-full animate-ping opacity-50 absolute" style="animation-duration: 3s;"></div>
+            </div>
+            <div class="w-28 h-28 bg-gradient-to-br from-pink-500 to-red-600 rounded-full flex items-center justify-center animate-bounce-slow mb-8 shadow-[0_0_50px_rgba(236,72,153,0.8)] border-4 border-pink-300 relative z-10 transition-transform duration-1000 hover:scale-110">
+                <i data-lucide="play" class="w-12 h-12 text-white fill-white ml-2"></i>
+            </div>
+            <h1 class="text-4xl font-cursive text-pink-100 mb-4 drop-shadow-lg">A Special Message</h1>
+            <p class="text-pink-300 text-sm tracking-[0.3em] uppercase font-sans border-b border-pink-500/50 pb-1">Tap to Open</p>
+        </div>
+
+        <!-- STAGE 1: HOLD BUTTON -->
+        <div id="stage-1" class="hidden-stage flex flex-col items-center justify-center space-y-12 relative z-20 font-serif w-full h-full transition-slow">
+            <div class="text-center space-y-3">
+                <h1 class="text-4xl font-bold text-pink-100 italic tracking-wider drop-shadow-lg">My Dearest...</h1>
+                <p class="text-pink-200/80 text-sm tracking-widest uppercase font-sans">A surprise awaits</p>
+            </div>
+
+            <div id="hold-btn" class="relative cursor-pointer select-none group transform transition-all duration-1000 active:scale-95 z-30"
+                 onmousedown="startHold()" onmouseup="endHold()" onmouseleave="endHold()" ontouchstart="startHold()" ontouchend="endHold()">
+                
+                <div id="hold-aura" class="absolute inset-0 bg-pink-500 blur-[50px] rounded-full transition-opacity duration-1000 opacity-20"></div>
+
+                <svg class="w-56 h-56 transform -rotate-90 relative z-10 pointer-events-none">
+                    <circle cx="112" cy="112" r="90" stroke="rgba(236, 72, 153, 0.4)" stroke-width="1" fill="transparent"/>
+                    <circle id="progress-circle" cx="112" cy="112" r="90" stroke="#ec4899" stroke-width="3" fill="transparent" 
+                            stroke-dasharray="565" stroke-dashoffset="565" class="transition-all duration-100 ease-linear drop-shadow-[0_0_15px_rgba(236,72,153,0.6)]" stroke-linecap="round"/>
+                </svg>
+                
+                <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+                    <div id="heart-container" class="w-36 h-36 bg-gradient-to-br from-red-900 to-pink-900 border border-pink-500/30 rounded-full flex items-center justify-center shadow-2xl transition-all duration-1000 animate-pulse-slow">
+                        <i data-lucide="heart" id="main-heart" class="w-14 h-14 text-pink-300 transition-all duration-1000"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center opacity-80">
+                <p class="text-pink-200 text-xs tracking-[0.3em] uppercase animate-bounce-slow">Hold to Start</p>
+            </div>
+        </div>
+
+        <!-- STAGE 2: SWIPE DECK -->
+        <div id="stage-2" class="hidden-stage flex flex-col items-center justify-center w-full h-full relative z-20 font-serif transition-slow">
+            <div class="text-center mb-12 animate-fade-in px-8">
+                <h2 class="text-3xl text-pink-100 mb-2 font-cursive">Let's Clear the Past</h2>
+                <p class="text-pink-300/80 text-xs tracking-widest uppercase font-sans">Making room for happiness</p>
+            </div>
+
+            <div id="card-container" class="card-stack perspective-1000 z-30">
+                <!-- Cards injected by JS -->
+            </div>
+            
+            <p class="mt-16 text-pink-200 text-xs tracking-[0.2em] uppercase animate-pulse-slow font-sans">Swipe away the bad</p>
+        </div>
+
+        <!-- STAGE 3: TICKET -->
+        <div id="stage-3" class="hidden-stage flex flex-col items-center justify-center w-full h-full relative z-50 px-4 font-serif transition-slow">
+            <div class="relative w-full max-w-sm bg-gradient-to-r from-yellow-500 via-amber-200 to-yellow-500 p-1 rounded-2xl shadow-[0_0_50px_rgba(251,191,36,0.3)] z-50 animate-fade-in">
+                <div class="bg-[#1a0f0f] p-8 rounded-xl border border-yellow-500/30 flex flex-col items-center text-center relative overflow-hidden z-50">
+                    <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] pointer-events-none"></div>
+                    
+                    <div class="mb-6 opacity-100 p-3 bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full shadow-lg transition-transform duration-1000 hover:scale-110">
+                       <i id="ticket-icon" data-lucide="infinity" class="w-8 h-8 text-[#1a0f0f]"></i>
+                    </div>
+                    
+                    <h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-amber-500 mb-2 tracking-widest uppercase font-sans">Golden Ticket</h2>
+                    
+                    <div class="w-full flex items-center justify-center my-6 opacity-80">
+                        <div class="h-px bg-yellow-600 w-16"></div>
+                        <div class="px-4 text-yellow-500 text-[10px] tracking-[0.3em]">ADMIT TWO SOULS</div>
+                        <div class="h-px bg-yellow-600 w-16"></div>
+                    </div>
+                    
+                    <h3 class="text-xl text-yellow-100 font-cursive mb-2 leading-relaxed">"Unlimited Hugs,<br/>Kisses & Love"</h3>
+                    <p class="text-yellow-600 text-[10px] mt-8 mb-8 tracking-[0.3em] uppercase font-sans">Valid: Forever & Always</p>
+                    
+                    <button id="claim-btn" onclick="claimTicket()" class="w-full py-4 font-bold text-sm tracking-[0.2em] rounded-full shadow-lg transition-all duration-700 uppercase relative z-50 cursor-pointer pointer-events-auto bg-gradient-to-r from-yellow-600 to-amber-600 text-white hover:scale-105 active:scale-95">
+                        Claim Forever
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STAGE 4: GALLERY -->
+        <div id="stage-4" class="hidden-stage flex flex-col items-center justify-center w-full h-full relative z-20 font-serif transition-slow" onclick="nextPhoto()">
+            <div class="text-center mb-12 animate-fade-in">
+                <h2 class="text-4xl text-pink-200 mb-2 font-cursive">Our Story</h2>
+                <p class="text-pink-400/80 text-[10px] uppercase tracking-[0.3em] font-sans">Moments to cherish</p>
+            </div>
+
+            <div id="gallery-container" class="relative w-72 h-[450px]">
+                <!-- Photos injected by JS -->
+            </div>
+            
+            <p class="mt-12 text-pink-300 text-[10px] uppercase tracking-[0.3em] animate-pulse-slow font-sans">Tap to relive</p>
+        </div>
+
+        <!-- STAGE 5: MESSAGE CARD -->
+        <div id="stage-5" class="hidden-stage flex flex-col items-center justify-center w-full h-full perspective-1000 relative z-20 font-serif transition-slow">
+            <div id="msg-instruction" class="text-center mb-14 animate-fade-in px-6">
+                <h2 class="text-4xl text-pink-100 mb-4 font-cursive">My Promise</h2>
+                <p class="text-pink-300 text-[10px] tracking-[0.3em] uppercase animate-pulse-slow font-sans">Read with your heart</p>
+            </div>
+
+            <div id="the-card" class="relative w-[340px] h-[540px] transition-all duration-1000 transform-style-3d cursor-pointer z-30 hover:scale-[1.02]" onclick="flipCard()">
+                
+                <!-- Front -->
+                <div class="absolute inset-0 backface-hidden rounded-xl shadow-[0_20px_50px_rgba(236,72,153,0.3)] bg-pink-900 overflow-hidden border border-pink-500/20" style="backface-visibility: hidden;">
+                     <img src="https://img.freepik.com/free-vector/realistic-happy-valentines-day-background_52683-53195.jpg?w=1000" alt="Cover" class="w-full h-full object-cover opacity-80" />
+                     <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/30 backdrop-blur-sm p-8">
+                         <div class="border-4 border-white/80 p-6 px-10 rounded-lg backdrop-blur-md bg-white/10 text-center">
+                             <h3 class="text-5xl font-bold text-white mb-2 font-serif drop-shadow-md">2026</h3>
+                             <p class="text-pink-100 text-[10px] tracking-[0.4em] uppercase font-sans">Our Chapter</p>
+                         </div>
+                     </div>
+                </div>
+
+                <!-- Back (Inside) -->
+                <div class="absolute inset-0 h-full w-full bg-[#fff0f5] rounded-xl shadow-2xl overflow-hidden flex border-r-4 border-l-2 border-pink-200 my-rotate-y-180" style="backface-visibility: hidden;">
+                    <div class="absolute inset-0 opacity-50 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]"></div>
+                    
+                    <div class="relative h-full w-full p-6 flex flex-col items-center text-center overflow-y-auto custom-scrollbar">
+                        <i data-lucide="heart" class="w-8 h-8 text-pink-400 mb-4 animate-pulse fill-current"></i>
+                        
+                        <div class="font-serif text-slate-800 space-y-4 leading-loose text-sm italic flex-1 flex flex-col justify-center">
+                            <p>"My Love,"</p>
+                            <p>"As the year turns, I don't just wish for happiness—I want to create it with you."</p>
+                            <p>"You are my favorite thought, my kindest reality, and my sweetest dream come true."</p>
+                            <p class="font-semibold text-pink-600">"Let's make this year our best one yet."</p>
+                        </div>
+                        
+                        <div class="mt-auto pt-4 w-full border-t border-pink-200 flex flex-col items-center gap-3">
+                            <p class="font-sans text-[10px] text-gray-400 tracking-widest uppercase mb-1">Forever Yours</p>
+                            
+                            <!-- WhatsApp Button -->
+                            <button onclick="event.stopPropagation(); window.open('https://wa.me/923271221813?text=I%20Love%20You%20Too%20❤️%20%E2%9D%A4%EF%B8%8F', '_blank')" 
+                                    class="w-full px-4 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white font-bold rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all duration-500 flex items-center justify-center gap-2 group z-50 pointer-events-auto">
+                                <span class="font-cursive text-xl">I Love You ❤️</span>
+                                <i data-lucide="send" class="w-4 h-4 text-white group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Logic -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Assets
+        const photos = [
+            "https://github.com/ItsMeHadi-bit/Javeria-1/blob/main/images/2.jpg?raw=true", 
+            "https://github.com/ItsMeHadi-bit/Javeria-1/blob/main/images/4.jpg?raw=true", 
+            "https://github.com/ItsMeHadi-bit/Javeria-1/blob/main/images/6.jpg?raw=true", 
+            "https://github.com/ItsMeHadi-bit/Javeria-1/blob/main/images/9.jpg?raw=true"
+        ];
+        
+        // State
+        let holdProgress = 0;
+        let holdInterval;
+        let photoIndex = 0;
+
+        // Floating Hearts Animation - Refined for slowness and distribution
+        function createHearts() {
+            const container = document.getElementById('floating-hearts');
+            // Increased count slightly for better vibe
+            for(let i=0; i<25; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="${['#ec4899', '#ef4444', '#e11d48', '#fce7f3'][Math.floor(Math.random()*4)]}" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5 4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>`;
+                heart.className = 'absolute opacity-0 animate-float pointer-events-none';
+                
+                // Randomize positions and delays for natural look
+                heart.style.left = Math.random() * 100 + '%';
+                // Extremely slow durations: 15s to 25s
+                heart.style.animationDuration = (15 + Math.random() * 10) + 's';
+                heart.style.animationDelay = (Math.random() * 10) + 's';
+                
+                // Random size
+                const size = Math.random() * 20 + 10;
+                heart.style.width = size + 'px';
+                heart.style.height = size + 'px';
+                
+                container.appendChild(heart);
+            }
+        }
+        createHearts();
+
+        // 1. Intro Logic
+        function startExperience() {
+            const audio = document.getElementById('bg-music');
+            audio.volume = 0.6; // Slightly softer music start
+            audio.play().catch(e => console.log("User interaction needed"));
+            
+            const intro = document.getElementById('intro-screen');
+            intro.style.transition = "opacity 2s ease-out";
+            intro.style.opacity = '0';
+            
+            setTimeout(() => {
+                intro.style.display = 'none';
+                const stage1 = document.getElementById('stage-1');
+                stage1.classList.remove('hidden-stage');
+                // Force lucide render just in case
+                lucide.createIcons();
+            }, 2000);
+        }
+
+        // 2. Hold Button Logic - Slower (4s)
+        function startHold() {
+            const circle = document.getElementById('progress-circle');
+            const aura = document.getElementById('hold-aura');
+            const heart = document.getElementById('main-heart');
+            const container = document.getElementById('heart-container');
+            const maxDash = 565;
+            
+            container.classList.remove('animate-pulse-slow');
+            container.classList.add('scale-90', 'border-pink-400');
+            aura.classList.remove('opacity-20');
+            aura.classList.add('opacity-50');
+            heart.classList.add('fill-pink-400', 'text-pink-400', 'scale-110');
+
+            let startTime = null;
+
+            function animate(time) {
+                if (!startTime) startTime = time;
+                const elapsed = time - startTime;
+                const progress = Math.min((elapsed / 4000) * 100, 100); // 4 seconds now
+                
+                const offset = maxDash - (maxDash * progress) / 100;
+                circle.style.strokeDashoffset = offset;
+
+                if (progress < 100 && holdInterval) {
+                    requestAnimationFrame(animate);
+                } else if (progress >= 100) {
+                    nextStage(1, 2);
+                    initSwipeDeck();
+                }
+            }
+            
+            holdInterval = true;
+            requestAnimationFrame(animate);
+        }
+
+        function endHold() {
+            holdInterval = false;
+            document.getElementById('progress-circle').style.strokeDashoffset = 565;
+            
+            const aura = document.getElementById('hold-aura');
+            const heart = document.getElementById('main-heart');
+            const container = document.getElementById('heart-container');
+            
+            container.classList.add('animate-pulse-slow');
+            container.classList.remove('scale-90', 'border-pink-400');
+            aura.classList.add('opacity-20');
+            aura.classList.remove('opacity-50');
+            heart.classList.remove('fill-pink-400', 'text-pink-400', 'scale-110');
+        }
+
+        // 3. Swipe Deck Logic
+        const swipeData = [
+            { text: "Distance", sub: "Is just a number", color: "bg-blue-100", textColor: "text-blue-900", icon: "map-pin" },
+            { text: "Bad Days", sub: "I'm here for you", color: "bg-gray-200", textColor: "text-gray-800", icon: "cloud-rain" },
+            { text: "Arguments", sub: "Forgive & Forget", color: "bg-orange-100", textColor: "text-orange-900", icon: "zap" },
+            { text: "Stress", sub: "Let it go", color: "bg-red-100", textColor: "text-red-900", icon: "smile" },
+            { text: "OUR LOVE", sub: "Forever & Always", color: "bg-gradient-to-br from-red-500 to-pink-600", textColor: "text-white", icon: "heart", isGift: true }
+        ];
+
+        function initSwipeDeck() {
+            const container = document.getElementById('card-container');
+            container.innerHTML = '';
+            
+            swipeData.forEach((card, index) => {
+                const el = document.createElement('div');
+                el.className = `card ${card.color} z-[${30 - index}]`;
+                el.style.transform = `scale(${1 - index * 0.05}) translateY(${index * 12}px)`;
+                el.style.zIndex = 30 - index;
+                if(index > 0) el.style.filter = "brightness(0.9)";
+                
+                el.innerHTML = `
+                    <i data-lucide="${card.icon}" class="w-12 h-12 mb-4 ${card.isGift ? 'text-white fill-current animate-pulse' : card.textColor.replace('text-', 'text-opacity-80 text-')}"></i>
+                    <h3 class="text-3xl font-bold mb-3 ${card.textColor} font-cursive">${card.text}</h3>
+                    ${!card.isGift ? `<div class="h-1 w-12 rounded-full bg-current opacity-30 mb-4 mx-auto ${card.textColor}"></div>` : ''}
+                    <p class="text-sm font-sans font-bold uppercase tracking-wider ${card.textColor} opacity-70">${card.sub}</p>
+                `;
+                
+                container.appendChild(el);
+                
+                if (index === 0) addSwipeLogic(el);
+            });
+            lucide.createIcons();
+        }
+
+        function addSwipeLogic(el) {
+            let startX = 0;
+            
+            el.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            });
+            
+            el.addEventListener('touchmove', (e) => {
+                const currentX = e.touches[0].clientX;
+                const deltaX = currentX - startX;
+                el.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.05}deg)`;
+            });
+            
+            el.addEventListener('touchend', (e) => {
+                const endX = e.changedTouches[0].clientX;
+                const deltaX = endX - startX;
+                
+                if (Math.abs(deltaX) > 100) {
+                    // Slower swipe exit
+                    el.style.transition = "transform 1s ease-out, opacity 1s";
+                    el.style.transform = `translateX(${deltaX > 0 ? 1000 : -1000}px) rotate(${deltaX * 0.1}deg)`;
+                    el.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        el.remove();
+                        if (swipeData.length > 1) {
+                            swipeData.shift();
+                            initSwipeDeck();
+                        } else {
+                            setTimeout(() => {
+                                nextStage(2, 3);
+                            }, 500);
+                        }
+                    }, 500); // Wait longer for smooth exit
+                } else {
+                    el.style.transform = `scale(1) translateY(0px)`;
+                }
+            });
+            
+            el.addEventListener('mousedown', (e) => {
+                startX = e.clientX;
+                const onMove = (e) => {
+                    const deltaX = e.clientX - startX;
+                    el.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.05}deg)`;
+                };
+                const onUp = (e) => {
+                    const deltaX = e.clientX - startX;
+                    document.removeEventListener('mousemove', onMove);
+                    document.removeEventListener('mouseup', onUp);
+                    
+                    if (Math.abs(deltaX) > 100) {
+                        el.style.transition = "transform 1s ease-out, opacity 1s";
+                        el.style.transform = `translateX(${deltaX > 0 ? 1000 : -1000}px) rotate(${deltaX * 0.1}deg)`;
+                        el.style.opacity = '0';
+                        setTimeout(() => {
+                            el.remove();
+                            if(swipeData[0].isGift) {
+                                setTimeout(() => nextStage(2, 3), 800);
+                            } else {
+                                swipeData.shift();
+                                initSwipeDeck();
+                            }
+                        }, 500);
+                    } else {
+                        el.style.transform = `scale(1) translateY(0px)`;
+                    }
+                };
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup', onUp);
+            });
+        }
+
+        // 4. Ticket Logic
+        function claimTicket() {
+            const btn = document.getElementById('claim-btn');
+            const icon = document.getElementById('ticket-icon');
+            
+            btn.innerText = "Access Granted";
+            btn.classList.remove('bg-gradient-to-r', 'from-yellow-600', 'to-amber-600');
+            btn.classList.add('bg-green-600', 'scale-100', 'cursor-default');
+            btn.onclick = null;
+            
+            icon.setAttribute('data-lucide', 'check');
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                nextStage(3, 4);
+                initGallery();
+            }, 3000); // 3s delay to read
+        }
+
+        // 5. Gallery Logic
+        function initGallery() {
+            renderGallery();
+        }
+
+        function renderGallery() {
+            const container = document.getElementById('gallery-container');
+            container.innerHTML = '';
+            
+            const captions = [
+                "Every smile with you...",
+                "...lights up my world.",
+                "Through every season...",
+                "I choose you."
+            ];
+
+            photos.forEach((imgSrc, index) => {
+                if (index < photoIndex) return; 
+                
+                const relativeIndex = index - photoIndex;
+                const el = document.createElement('div');
+                // Slower transition for gallery cards
+                el.className = "absolute inset-0 bg-white p-3 pb-16 shadow-2xl rounded-lg transform transition-all duration-1000 ease-out origin-bottom";
+                el.id = `photo-${index}`;
+                
+                const rotate = relativeIndex % 2 === 0 ? relativeIndex * 2 : relativeIndex * -2;
+                const scale = 1 - (relativeIndex * 0.05);
+                const translateY = relativeIndex * -10;
+                const zIndex = 30 - relativeIndex;
+                const opacity = relativeIndex > 2 ? 0 : 1;
+
+                el.style.transform = `rotate(${rotate}deg) scale(${scale}) translateY(${translateY}px)`;
+                el.style.zIndex = zIndex;
+                el.style.opacity = opacity;
+
+                el.innerHTML = `
+                    <div class="w-full h-full overflow-hidden bg-gray-100 relative rounded-sm">
+                        <img src="${imgSrc}" alt="Memory" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute bottom-6 left-0 w-full text-center">
+                        <span class="font-cursive text-pink-600 text-2xl">${captions[index] || "Us ❤️"}</span>
+                    </div>
+                    <div class="absolute -top-3 left-1/2 w-24 h-6 bg-pink-100/50 backdrop-blur-sm transform -translate-x-1/2 rotate-1 shadow-sm border border-white"></div>
+                `;
+                
+                container.appendChild(el);
+            });
+        }
+
+        function nextPhoto() {
+            const currentCard = document.getElementById(`photo-${photoIndex}`);
+            if (currentCard) {
+                // Fly away slowly
+                currentCard.style.transition = "all 1.5s cubic-bezier(0.25, 1, 0.5, 1)";
+                currentCard.style.transform = "translateX(100vw) rotate(45deg)";
+                currentCard.style.opacity = "0";
+            }
+
+            setTimeout(() => {
+                if (photoIndex < photos.length - 1) {
+                    photoIndex++;
+                    renderGallery();
+                } else {
+                    nextStage(4, 5);
+                }
+            }, 2000); // Slower pacing between photos
+        }
+
+        // 6. Message Card Logic
+        let isFlipped = false;
+        function flipCard() {
+            const card = document.getElementById('the-card');
+            const instruction = document.getElementById('msg-instruction');
+            
+            if (!isFlipped) {
+                // Apply strict flip class
+                card.classList.add('card-flipped');
+                instruction.style.transition = "opacity 1s";
+                instruction.style.opacity = '0';
+                isFlipped = true;
+            }
+        }
+
+        // Navigation Helper - Slower fade transitions
+        function nextStage(current, next) {
+            const currentEl = document.getElementById(`stage-${current}`);
+            const nextEl = document.getElementById(`stage-${next}`);
+            
+            currentEl.style.transition = 'opacity 1.5s ease';
+            currentEl.style.opacity = '0';
+            
+            setTimeout(() => {
+                currentEl.classList.add('hidden-stage');
+                nextEl.classList.remove('hidden-stage');
+                nextEl.style.opacity = '0';
+                // Trigger reflow
+                void nextEl.offsetWidth;
+                nextEl.style.transition = 'opacity 1.5s ease';
+                nextEl.style.opacity = '1';
+                
+                lucide.createIcons();
+            }, 1500);
+        }
+
+    </script>
+</body>
+</html>
